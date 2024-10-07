@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { EmbedBuilder, REST, Routes, ActivityType, Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { EmbedBuilder, REST, Routes, ActivityType, Client, Events, GatewayIntentBits, Collection, Status } = require('discord.js');
 require('dotenv').config()
 const fs = require('node:fs');
 const path = require('node:path');
@@ -7,7 +7,7 @@ const path = require('node:path');
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildPresences] });
 
 client.commands = new Collection();
 
@@ -67,21 +67,34 @@ client.on(Events.InteractionCreate, async interaction => {
 // It makes some properties non-nullable.
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-	//client.user.setActivity("default", { type: ActivityType.Playing }); //debug
+	// client.user.setActivity("default", { type: ActivityType.Playing }); //debug
+
 	io.on("connection", (socket) => {
 		console.log("Socket connected");
 		console.log(socket.id);
 		
-		//change status based on socket message
+		//change status text based on socket message
 		socket.on("setStatusText", (statusText) => {
 			console.log("New status Text: " + statusText);
-			client.user.setActivity(statusText, { type: ActivityType.Playing });
+			if (statusText == "") {
+				console.log("No status text set");
+				return;
+			}
+
+			if (client.user.presence.activities[0].type) {
+				client.user.setActivity(statusText, { type: client.user.presence.activities[0].type });
+			} else {
+				console.log("No previous status");
+			}
 		});
 
 		//change status type based on socket message
 		socket.on("setStatusType", (statusType) => {
 			console.log("New status Type: " + statusType);
-			console.log(client.user.presence.activities[0].name);
+			if (!client.user.presence.activities[0].name) {
+				console.log("No status text set");
+				return;
+			}
 			switch(statusType) {
 				case "Playing":
 					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Playing });
@@ -100,6 +113,41 @@ client.once(Events.ClientReady, readyClient => {
 					break;
 				default:
 					console.log("Invalid status type");
+					break;
+			}
+		});
+
+		//change presence status based on socket message
+		socket.on("setPresenceStatus", (status) => {
+			console.log("New presence status: " + status);
+			switch(status) {
+				case "Online":
+					client.user.setPresence({
+						status: "online",
+					});
+					break;
+				case "Idle":
+					client.user.setPresence({
+						status: "idle",
+					});
+					break;
+				case "DoNotDisturb":
+					client.user.setPresence({
+						status: "dnd",
+					});
+					break;
+				case "Invisible":
+					client.user.setPresence({
+						status: "invisible",
+					});
+					break;
+				case "Offline":
+					client.user.setPresence({
+						status: "offline",
+					});
+					break;
+				default:
+					console.log("Invalid presence status");
 					break;
 			}
 		});
