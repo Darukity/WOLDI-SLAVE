@@ -67,6 +67,7 @@ client.on(Events.InteractionCreate, async interaction => {
 // It makes some properties non-nullable.
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	//client.user.setActivity("default", { type: ActivityType.Playing }); //debug
 	io.on("connection", (socket) => {
 		console.log("Socket connected");
 		console.log(socket.id);
@@ -77,6 +78,31 @@ client.once(Events.ClientReady, readyClient => {
 			client.user.setActivity(statusText, { type: ActivityType.Playing });
 		});
 
+		//change status type based on socket message
+		socket.on("setStatusType", (statusType) => {
+			console.log("New status Type: " + statusType);
+			console.log(client.user.presence.activities[0].name);
+			switch(statusType) {
+				case "Playing":
+					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Playing });
+					break;
+				case "Streaming":
+					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Streaming });
+					break;
+				case "Listening":
+					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Listening });
+					break;
+				case "Watching":
+					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Watching });
+					break;
+				case "Competing":
+					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Competing });
+					break;
+				default:
+					console.log("Invalid status type");
+					break;
+			}
+		});
 	});
 	  
 	httpServer.listen(3000);
