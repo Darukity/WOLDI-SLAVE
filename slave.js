@@ -88,6 +88,37 @@ client.once(Events.ClientReady, readyClient => {
 			}
 		});
 
+		function setStatus(statusText, statusType) {
+			if (statusText == "") {
+				console.log("No status text set");
+				return;
+			}
+			if (statusType == "") {
+				statusType = "Playing";
+			}
+
+			switch(statusType) {
+				case "Playing":
+					client.user.setActivity(statusText, { type: ActivityType.Playing });
+					break;
+				case "Streaming":
+					client.user.setActivity(statusText, { type: ActivityType.Streaming });
+					break;
+				case "Listening":
+					client.user.setActivity(statusText, { type: ActivityType.Listening });
+					break;
+				case "Watching":
+					client.user.setActivity(statusText, { type: ActivityType.Watching });
+					break;
+				case "Competing":
+					client.user.setActivity(statusText, { type: ActivityType.Competing });
+					break;
+				default:
+					console.log("Invalid status type");
+					break;
+			}
+		}
+
 		//change status type based on socket message
 		socket.on("setStatusType", (statusType) => {
 			console.log("New status Type: " + statusType);
@@ -95,26 +126,7 @@ client.once(Events.ClientReady, readyClient => {
 				console.log("No status text set");
 				return;
 			}
-			switch(statusType) {
-				case "Playing":
-					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Playing });
-					break;
-				case "Streaming":
-					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Streaming });
-					break;
-				case "Listening":
-					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Listening });
-					break;
-				case "Watching":
-					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Watching });
-					break;
-				case "Competing":
-					client.user.setActivity(client.user.presence.activities[0].name, { type: ActivityType.Competing });
-					break;
-				default:
-					console.log("Invalid status type");
-					break;
-			}
+			setStatus(client.user.presence.activities[0].name, statusType);
 		});
 
 		//change presence status based on socket message
@@ -151,6 +163,17 @@ client.once(Events.ClientReady, readyClient => {
 					break;
 			}
 		});
+
+		//new status
+		socket.on("newStatus", (statusText, statusType) => {
+			console.log("New status: " + statusText + " " + statusType);
+			if (statusText == "") {
+				console.log("No status text set");
+				return;
+			}
+			setStatus(statusText, statusType);
+		});
+
 	});
 	  
 	httpServer.listen(3000);
