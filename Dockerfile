@@ -1,13 +1,13 @@
-# Utilise une image Node.js de base
+# Use a base Node.js image
 FROM node:18
 
-# Crée un répertoire de travail pour l'application
+# Create a working directory for the application
 WORKDIR /usr/src/app
 
-# Copie le fichier app.js dans le conteneur
+# Copy all files into the container
 COPY . .
 
 EXPOSE 3000
 
-# Commande à exécuter lorsque le conteneur démarre
-CMD sh -c "npm i && node slave.js"
+# Command to run when the container starts
+CMD sh -c "npm i && node refresh-commands.js && node slave.js"
