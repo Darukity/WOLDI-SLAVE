@@ -2,3 +2,4 @@ POC
 node_modules/
 dist/
 .env
+lunch.bat
