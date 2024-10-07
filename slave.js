@@ -14,6 +14,16 @@ client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
+const { Server } = require('socket.io');
+const { createServer } = require('http');
+
+const httpServer = createServer();
+const io = new Server(httpServer, {
+	cors: {
+		origin: '*',
+	},
+});
+
 for (const folder of commandFolders) {
 	const commandsPath = path.join(foldersPath, folder);
 	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -40,7 +50,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 
 	try {
-		await command.execute(interaction);
+		await command.execute(interaction, client);
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
@@ -57,6 +67,19 @@ client.on(Events.InteractionCreate, async interaction => {
 // It makes some properties non-nullable.
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	io.on("connection", (socket) => {
+		console.log("Socket connected");
+		console.log(socket.id);
+		
+		//change status based on socket message
+		socket.on("setStatusText", (statusText) => {
+			console.log("New status Text: " + statusText);
+			client.user.setActivity(statusText, { type: ActivityType.Playing });
+		});
+
+	});
+	  
+	httpServer.listen(3000);
 });
 
 
