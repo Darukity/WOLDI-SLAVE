@@ -7,6 +7,8 @@ const path = require('node:path');
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
 
+const LOG_CHANNEL_ID = process.env.LOG_CHANNEL_ID;
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildPresences] });
 
 client.commands = new Collection();
@@ -172,6 +174,13 @@ client.once(Events.ClientReady, readyClient => {
 				return;
 			}
 			setStatus(statusText, statusType);
+		});
+
+		//log message
+		socket.on("log", (message) => {
+			console.log("Log message: " + message);
+			const logChannel = client.channels.cache.get(LOG_CHANNEL_ID);
+			logChannel.send(message);
 		});
 
 	});

@@ -16,7 +16,7 @@ This project aims to create a "slave" Discord bot that can be run in a Docker Co
 2. **Run the Docker Container**:
     Use the following command to run the Docker container. This command maps port 3001 on your host to port 3000 in the container and sets the necessary environment variables:
     ```sh
-    docker run -d -p 3001:3000 -e TOKEN=<Your token> -e CLIENT_ID=<bots client id> -e GUILD_ID=<id of your server> my-node-app
+    docker run -d -p 3001:3000 -e TOKEN=<Your token> -e CLIENT_ID=<bots client id> -e GUILD_ID=<id of your server> -e LOG_CHANNEL_ID=<id of your log channel> my-node-app
     ```
     You can replace 3001 with whatever port is avalilable if you want to handle many slaves at the same time.
 
@@ -31,6 +31,7 @@ This project aims to create a "slave" Discord bot that can be run in a Docker Co
     TOKEN=<Your token>
     CLIENT_ID=<bots client id>
     GUILD_ID=<id of your server>
+    LOG_CHANNEL_ID=<id of your log channel>
     ```
 
 3. **Install Dependencies**:
@@ -88,5 +89,14 @@ This project aims to create a "slave" Discord bot that can be run in a Docker Co
             {
                 "statusText": "New status text",
                 "statusType": "Playing"
+            }
+            ```
+    5. **Log A Message**:
+        - **Event Name**: `log`
+        - **Description**: Logs a message to the specified log channel.
+        - **Payload**:
+            ```json
+            {
+                "message": "This is a log message"
             }
             ```
