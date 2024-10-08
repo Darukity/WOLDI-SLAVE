@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Darukity/WOLDI-SLAVE.gi.git"
+    "url": "git+ssh://git@github.com/Darukity/WOLDI-SLAVE.git.git"
   },
   "author": "Darukity",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Darukity/WOLDI-SLAVE.gi/issues"
+    "url": "https://github.com/Darukity/WOLDI-SLAVE.git/issues"
   },
-  "homepage": "https://github.com/Darukity/WOLDI-SLAVE.gi#readme",
+  "homepage": "https://github.com/Darukity/WOLDI-SLAVE.git#readme",
   "dependencies": {
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",

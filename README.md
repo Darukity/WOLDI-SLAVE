@@ -1,4 +1,9 @@
-# How to Launch the Program
+# This project
+This project is part of a larger initiative called [WOLDI-SUPERVISOR](https:/github.com/Darukity/WOLDI-SUPERVISOR). The goal of WOLDI (Wake On LAN DiscordInterface) is to create a way to wake up any PC within the network of themachine running WOLDI-SUPERVISOR.
+
+This project aims to create a "slave" Discord bot that can be run in a Docker Container and perform various tasks using socket.io calls. It does not need to be run alongside WOLDI-SUPERVISOR and can operate standalone for other projects.
+
+# How to Launch the Project
 
 ## Using Docker
 
